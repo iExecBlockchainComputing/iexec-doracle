@@ -1,8 +1,8 @@
 {
-	"name": "iexec-price-oracle-receiver",
-	"version": "0.0.3",
-	"description": "Receiving contract for the decentralised iexec-price-oracle",
-	"repository": {
+  "name": "iexec-price-oracle-receiver",
+  "version": "0.0.3",
+  "description": "Receiving contract for the decentralised iexec-price-oracle",
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git"
   },
@@ -13,11 +13,11 @@
     "/build",
     "/contracts"
   ],
-	"author": "iExec",
-	"license": "ISC",
-	"homepage": "https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git#readme",
+  "author": "iExec",
+  "license": "ISC",
+  "homepage": "https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git#readme",
   "dependencies": {
-    "iexec-poco": "^3.0.28",
+    "iexec-poco": "^3.0.29",
     "iexec-solidity": "^0.0.6"
   }
 }
