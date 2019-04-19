@@ -19,11 +19,11 @@ Given a set of parameters, the application produce a self describing result, enc
 
 For example, given the parameters "BTC USD 9 2019-04-11T13:08:32.605Z" the price-oracle application will:
 
-	1. Retreive the price of BTC in USD at 2019-04-11T13:08:32.605Z
-	2. Multiply this value by 10e9 (to capture price value more accurately as it will be represented by an integer onchain)
-	3. encode the date, the description ("btc-usd-9") and the value using `abi.encode`
-	4. Store this result in `/iexec_out/callback.iexec`
-	5. hash the result and store it in `/iexec_out/determinism.iexec`
+1. Retreive the price of BTC in USD at 2019-04-11T13:08:32.605Z
+2. Multiply this value by 10e9 (to capture price value more accurately as it will be represented by an integer onchain)
+3. encode the date, the description ("btc-usd-9") and the value using `abi.encode`
+4. Store this result in `/iexec_out/callback.iexec`
+5. hash the result and store it in `/iexec_out/determinism.iexec`
 
 iExec will then achieve PoCo consensus on the `/iexec_out/determinism.iexec` value, and will store both the `/iexec_out/determinism.iexec` and the `/iexec_out/callback.iexec` onchain.
 
@@ -32,20 +32,25 @@ Given a taskID, it is possible to retreive all the details of the computation as
 How to setup an oracle contract
 -------------------------------
 
-	1. Record the address of the iExec Hub and Clerk contracts
-	2. Register the requierements needed for an result to we processed
-		a. Which application (single, any, whitelist?)
-		b. Which dataset (single, any, whitelist?)
-		c. Which workerpool (single, any, whitelist?)
-		d. Minimum level of trust
-		e. Mandatory tag
+1. Record the address of the iExec Hub and Clerk contracts
+2. Register the requierements needed for an result to we processed
+	a. Which application (single, any, whitelist?)
+	b. Which dataset (single, any, whitelist?)
+	c. Which workerpool (single, any, whitelist?)
+	d. Minimum level of trust
+	e. Mandatory tag
 
 How to update an oracle contract
 --------------------------------
 
-	1. Send the taskID of a valid execution to the oracle smart contract.
-	2. The oracle smart contract retreives details about this task from the iexec's smart contracts
-	3. The oracle smart contract verifies the execution is valid (authorized app, dataset, workerpool, trust level and tags)
-	4. The oracle smart contract verifies the hash of the results correspond to the resultDigest that achieved consensus, thus verifying the validity of the result field.
-	5. The oracle smart contract decodes the results using `abi.decode`
-	6. The oracle smart contract process this results. In the case of the price oracle this means storing the value if it is more recent than the one currently reccorded.
+1. Send the taskID of a valid execution to the oracle smart contract.
+2. The oracle smart contract retreives details about this task from the iexec's smart contracts
+3. The oracle smart contract verifies the execution is valid (authorized app, dataset, workerpool, trust level and tags)
+4. The oracle smart contract verifies the hash of the results correspond to the resultDigest that achieved consensus, thus verifying the validity of the result field.
+5. The oracle smart contract decodes the results using `abi.decode`
+6. The oracle smart contract process this results. In the case of the price oracle this means storing the value if it is more recent than the one currently reccorded.
+
+How to read price from the iExec price oracle
+---------------------------------------------
+
+Just query the oracle `values` field with the id of the requested wield. For example, to get the most recent price of BTC in USD with 9 place precision (as described above), query `values(keccak256(bytes("BTC-USD-9")))` and this will return a structure containing the value, the associate date, and the details of the request.
