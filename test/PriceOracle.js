@@ -1,29 +1,27 @@
 var RLC                = artifacts.require("../node_modules/rlc-faucet-contract/contracts/RLC.sol");
-var IexecHub           = artifacts.require("./IexecHub.sol");
-var IexecClerk         = artifacts.require("./IexecClerk.sol");
-var AppRegistry        = artifacts.require("./AppRegistry.sol");
-var DatasetRegistry    = artifacts.require("./DatasetRegistry.sol");
-var WorkerpoolRegistry = artifacts.require("./WorkerpoolRegistry.sol");
-var App                = artifacts.require("./App.sol");
-var Dataset            = artifacts.require("./Dataset.sol");
-var Workerpool         = artifacts.require("./Workerpool.sol");
-var Broker             = artifacts.require("./Broker.sol");
-var SMSDirectory       = artifacts.require("./SMSDirectory.sol");
+var IexecHub           = artifacts.require("../node_modules/iexec-poco/contracts/IexecHub.sol");
+var IexecClerk         = artifacts.require("../node_modules/iexec-poco/contracts/IexecClerk.sol");
+var AppRegistry        = artifacts.require("../node_modules/iexec-poco/contracts/AppRegistry.sol");
+var DatasetRegistry    = artifacts.require("../node_modules/iexec-poco/contracts/DatasetRegistry.sol");
+var WorkerpoolRegistry = artifacts.require("../node_modules/iexec-poco/contracts/WorkerpoolRegistry.sol");
+var App                = artifacts.require("../node_modules/iexec-poco/contracts/App.sol");
+var Dataset            = artifacts.require("../node_modules/iexec-poco/contracts/Dataset.sol");
+var Workerpool         = artifacts.require("../node_modules/iexec-poco/contracts/Workerpool.sol");
+
+var PriceOracle = artifacts.require("./PriceOracle.sol");
 
 const { shouldFail } = require('openzeppelin-test-helpers');
 const   multiaddr    = require('multiaddr');
-const   constants    = require("../constants");
-const   odbtools     = require('../../utils/odb-tools');
-const   wallets      = require('../wallets');
-
-var IexecOracleReceiver = artifacts.require("./IexecOracleReceiver.sol");
+const   constants    = require('../utils/constants');
+const   odbtools     = require('../utils/odb-tools');
+const   wallets      = require('../utils/wallets');
 
 function extractEvents(txMined, address, name)
 {
 	return txMined.logs.filter((ev) => { return ev.address == address && ev.event == name });
 }
 
-contract('IexecOracleReceiver', async (accounts) => {
+contract('PriceOracle', async (accounts) => {
 
 	assert.isAtLeast(accounts.length, 10, "should have at least 10 accounts");
 	let iexecAdmin      = accounts[0];
@@ -44,7 +42,6 @@ contract('IexecOracleReceiver', async (accounts) => {
 	var AppRegistryInstance        = null;
 	var DatasetRegistryInstance    = null;
 	var WorkerpoolRegistryInstance = null;
-	var BrokerInstance             = null;
 
 	var AppInstance        = null;
 	var DatasetInstance    = null;
@@ -58,7 +55,7 @@ contract('IexecOracleReceiver', async (accounts) => {
 	var deals = {};
 	var tasks = {};
 
-	var IexecOracleReceiverInstance = null;
+	var PriceOracleInstance = null;
 
 	const date       = Date.now();
 	const details    = "usd-rlc";
@@ -93,7 +90,7 @@ contract('IexecOracleReceiver', async (accounts) => {
 		AppRegistryInstance        = await AppRegistry.deployed();
 		DatasetRegistryInstance    = await DatasetRegistry.deployed();
 		WorkerpoolRegistryInstance = await WorkerpoolRegistry.deployed();
-		BrokerInstance             = await Broker.deployed();
+		PriceOracleInstance = await PriceOracle.new(IexecHubInstance.address);
 
 		odbtools.setup({
 			name:              "iExecODB",
@@ -216,13 +213,13 @@ contract('IexecOracleReceiver', async (accounts) => {
 		assert.isBelow(txMined.receipt.gasUsed, constants.AMOUNT_GAS_PROVIDED, "should not use all gas");
 	});
 
-	it("[Setup] Oracle deployment", async () => {
-		// ORACLE
-		IexecOracleReceiverInstance = await IexecOracleReceiver.new(
-			IexecHubInstance.address,
+	it("[Setup] Oracle setup", async () => {
+		await PriceOracleInstance.updateEnv(
 			AppInstance.address,
 			constants.NULL.ADDRESS,
 			WorkerpoolInstance.address,
+			"0x0000000000000000000000000000000000000000000000000000000000000000",
+			0,
 		);
 	});
 
@@ -248,7 +245,7 @@ contract('IexecOracleReceiver', async (accounts) => {
 				workerpoolprice:   25,
 				volume:            1000,
 				tag:               "0x0000000000000000000000000000000000000000000000000000000000000000",
-				category:          4,
+				category:          0,
 				trust:             trusttarget,
 				apprestrict:       constants.NULL.ADDRESS,
 				datasetrestrict:   constants.NULL.ADDRESS,
@@ -268,11 +265,11 @@ contract('IexecOracleReceiver', async (accounts) => {
 				workerpoolmaxprice: 25,
 				volume:             1,
 				tag:                "0x0000000000000000000000000000000000000000000000000000000000000000",
-				category:           4,
+				category:           0,
 				trust:              trusttarget,
 				requester:          user,
 				beneficiary:        user,
-				callback:           IexecOracleReceiverInstance.address,
+				callback:           PriceOracleInstance.address,
 				params:             parameters,
 				salt:               web3.utils.randomHex(32),
 				sign:               constants.NULL.SIGNATURE,
@@ -334,13 +331,13 @@ contract('IexecOracleReceiver', async (accounts) => {
 	});
 
 	it("Process Oracle", async () => {
-		const valueBefore = await IexecOracleReceiverInstance.values(id);
+		const valueBefore = await PriceOracleInstance.values(id);
 		assert.equal(valueBefore.date,    0 );
 		assert.equal(valueBefore.details, "");
 		assert.equal(valueBefore.value,   0 );
 
-		txMined = await IexecOracleReceiverInstance.processResult(task);
-		events = extractEvents(txMined, IexecOracleReceiverInstance.address, "ValueChange");
+		txMined = await PriceOracleInstance.processResult(task);
+		events = extractEvents(txMined, PriceOracleInstance.address, "ValueChange");
 		assert.equal(events[0].args.id,                  id   );
 		assert.equal(events[0].args.oldDate.toNumber(),  0    );
 		assert.equal(events[0].args.oldValue.toNumber(), 0    );
@@ -348,7 +345,7 @@ contract('IexecOracleReceiver', async (accounts) => {
 		assert.equal(events[0].args.newValue.toNumber(), value);
 
 		totalgas += txMined.receipt.gasUsed;
-		const valueAfter = await IexecOracleReceiverInstance.values(id);
+		const valueAfter = await PriceOracleInstance.values(id);
 		assert.equal(valueAfter.date,    date   );
 		assert.equal(valueAfter.details, details);
 		assert.equal(valueAfter.value,   value  );
