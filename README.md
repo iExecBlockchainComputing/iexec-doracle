@@ -10,8 +10,8 @@ Building an oracle application
 ------------------------------
 
 iExec applications produce different outputs.
-- The consensus is achieve on a deterministic value describing the application output. By default this is the hash of the result archive, but can be overriden by the content of `/iexec_out/determinism.iexec`. Upon succesfull verification, this is stored onchain in the `task.resultDigest` field.
-- The actual result. By default this is the IPFS address of a (potentially encrypted) archive containing the outputs, but can be overrident by the content of `/iexec_out/callback.iexec`. Upon succesfull verification, this is stored onchain in the `task.results` field.
+* The consensus is achieve on a deterministic value describing the application output. By default this is the hash of the result archive, but can be overriden by the content of `/iexec_out/determinism.iexec`. Upon succesfull verification, this is stored onchain in the `task.resultDigest` field.
+* The actual result. By default this is the IPFS address of a (potentially encrypted) archive containing the outputs, but can be overrident by the content of `/iexec_out/callback.iexec`. Upon succesfull verification, this is stored onchain in the `task.results` field.
 
 An iExec oracle application sur as the on used in the price-oracle example uses this 2 elements to produce verified results to the blockchain.
 
@@ -33,12 +33,13 @@ How to setup an oracle contract
 -------------------------------
 
 1. Record the address of the iExec Hub and Clerk contracts
+
 2. Register the requierements needed for an result to we processed
-	a. Which application (single, any, whitelist?)
-	b. Which dataset (single, any, whitelist?)
-	c. Which workerpool (single, any, whitelist?)
-	d. Minimum level of trust
-	e. Mandatory tag
+	* Which application (single, any, whitelist?)
+	* Which dataset (single, any, whitelist?)
+	* Which workerpool (single, any, whitelist?)
+	* Minimum level of trust
+	* Mandatory tag
 
 How to update an oracle contract
 --------------------------------
