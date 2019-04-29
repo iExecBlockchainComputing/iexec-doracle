@@ -16,14 +16,18 @@ contract PriceOracle is Ownable, IexecOracleReceiver
 
 	event ValueChange(bytes32 indexed id, uint256 oldDate, uint256 oldValue, uint256 newDate, uint256 newValue);
 
+	// ================[ IexecHub 3.0.30 ]================
+	// Mainnet: TDB
+	// Kovan:   0xC75f4909185f712F2795563B956CCF62b76A6e13
+	// ===================================================
 	constructor(IexecHub _iexecHub) public IexecOracleReceiver(_iexecHub)
 	{
 	}
 
 	function updateEnv(
-		address _authorizedApp
-	,	address _authorizedDataset
-	,	address _authorizedWorkerpool
+	  address _authorizedApp
+	, address _authorizedDataset
+	, address _authorizedWorkerpool
 	, bytes32 _requiredtag
 	, uint256 _requiredtrust
 	)
