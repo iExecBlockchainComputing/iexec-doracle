@@ -61,7 +61,7 @@ Deployed addresses
 
 1. **Kovan:**
 
-	price oracle: `https://kovan.etherscan.io/address/0x8fb536F520911e55489145c1dBBb260962ceB4DD`
+	price oracle: `https://kovan.etherscan.io/address/0xb78a841219caca5d8aa8c01fd6dee08a94d24274`
 
 	app whitelist: `https://kovan.etherscan.io/address/0x7c788c2b85e20b4fa25bd579a6b1d0218d86bdd1`
 
