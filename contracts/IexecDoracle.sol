@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "iexec-poco/contracts/IexecClerk.sol";
 import "iexec-poco/contracts/IexecHub.sol";
 
-contract IexecOracleReceiver is SignatureVerifier, IOracleConsumer
+contract IexecDoracle is SignatureVerifier, IOracleConsumer
 {
 	IexecHub   public m_iexecHub;
 	IexecClerk public m_iexecClerk;
@@ -15,7 +15,7 @@ contract IexecOracleReceiver is SignatureVerifier, IOracleConsumer
 	bytes32    public m_requiredtag;
 	uint256    public m_requiredtrust;
 
-	event ResultReady(bytes32 indexed oracleCallId);
+	event ResultReady(bytes32 indexed doracleCallId);
 
 	constructor(IexecHub _iexecHub)
 	public
@@ -24,13 +24,13 @@ contract IexecOracleReceiver is SignatureVerifier, IOracleConsumer
 		m_iexecClerk = m_iexecHub.iexecclerk();
 	}
 
-	function receiveResult(bytes32 _oracleCallId, bytes calldata)
+	function receiveResult(bytes32 _doracleCallId, bytes calldata)
 	external
 	{
-		emit ResultReady(_oracleCallId);
+		emit ResultReady(_doracleCallId);
 	}
 
-	function _oracleReceiverUpdateSettings(
+	function _iexecDoracleUpdateSettings(
 		address _authorizedApp
 	,	address _authorizedDataset
 	,	address _authorizedWorkerpool
@@ -46,10 +46,10 @@ contract IexecOracleReceiver is SignatureVerifier, IOracleConsumer
 		m_requiredtrust        = _requiredtrust;
 	}
 
-	function _oracleGetVerifiedResult(bytes32 _oracleCallId)
+	function _iexecDoracleGetVerifiedResult(bytes32 _doracleCallId)
 	internal view returns (bytes memory)
 	{
-		IexecODBLibCore.Task memory task = m_iexecHub.viewTask(_oracleCallId);
+		IexecODBLibCore.Task memory task = m_iexecHub.viewTask(_doracleCallId);
 		IexecODBLibCore.Deal memory deal = m_iexecClerk.viewDeal(task.dealid);
 
 		require(task.status == IexecODBLibCore.TaskStatusEnum.COMPLETED,                                                                                    "result-not-available"             );

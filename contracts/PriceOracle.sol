@@ -1,9 +1,9 @@
 pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
-import "./IexecOracleReceiver.sol";
+import "./IexecDoracle.sol";
 
-contract PriceOracle is Ownable, IexecOracleReceiver
+contract PriceOracle is Ownable, IexecDoracle
 {
 	struct timedValue
 	{
@@ -20,7 +20,7 @@ contract PriceOracle is Ownable, IexecOracleReceiver
 	// Mainnet: TDB
 	// Kovan:   0xC75f4909185f712F2795563B956CCF62b76A6e13
 	// ===================================================
-	constructor(IexecHub _iexecHub) public IexecOracleReceiver(_iexecHub)
+	constructor(IexecHub _iexecHub) public IexecDoracle(_iexecHub)
 	{
 	}
 
@@ -33,7 +33,7 @@ contract PriceOracle is Ownable, IexecOracleReceiver
 	)
 	public onlyOwner
 	{
-		_oracleReceiverUpdateSettings(_authorizedApp, _authorizedDataset, _authorizedWorkerpool, _requiredtag, _requiredtrust);
+		_iexecDoracleUpdateSettings(_authorizedApp, _authorizedDataset, _authorizedWorkerpool, _requiredtag, _requiredtrust);
 	}
 
 
@@ -48,7 +48,7 @@ contract PriceOracle is Ownable, IexecOracleReceiver
 		uint256       value;
 
 		// Parse results
-		(date, details, value) = decodeResults(_oracleGetVerifiedResult(_oracleCallId));
+		(date, details, value) = decodeResults(_iexecDoracleGetVerifiedResult(_oracleCallId));
 
 		// Process results
 		bytes32 id = keccak256(bytes(details));
