@@ -1,6 +1,7 @@
 pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./IexecDoracle.sol";
 
 contract PriceOracle is Ownable, IexecDoracle
@@ -34,7 +35,6 @@ contract PriceOracle is Ownable, IexecDoracle
 		_iexecDoracleUpdateSettings(_authorizedApp, _authorizedDataset, _authorizedWorkerpool, _requiredtag, _requiredtrust);
 	}
 
-
 	function decodeResults(bytes memory results)
 	public pure returns(uint256, string memory, uint256)
 	{ return abi.decode(results, (uint256, string, uint256)); }
@@ -59,5 +59,4 @@ contract PriceOracle is Ownable, IexecDoracle
 			values[id].value   = value;
 		}
 	}
-
 }
