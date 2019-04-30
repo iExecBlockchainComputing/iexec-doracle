@@ -1,13 +1,13 @@
 {
-  "name": "iexec-price-oracle-receiver",
-  "version": "0.0.3",
-  "description": "Receiving contract for the decentralised iexec-price-oracle",
+  "name": "iexec-doracle-contracts",
+  "version": "0.0.1",
+  "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git"
+    "url": "git+https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git"
   },
   "bugs": {
-    "url": "https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git/issues"
+    "url": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git/issues"
   },
   "files": [
     "/build",
@@ -15,7 +15,7 @@
   ],
   "author": "iExec",
   "license": "ISC",
-  "homepage": "https://github.com/iExecBlockchainComputing/iexec-price-oracle-receiver.git#readme",
+  "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
 		"chai": "^4.2.0",
     "ethereumjs-util": "^5.2.0",
