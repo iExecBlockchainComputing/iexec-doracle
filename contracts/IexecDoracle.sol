@@ -7,6 +7,12 @@ import "iexec-poco/contracts/IexecHub.sol";
 
 contract IexecDoracle is SignatureVerifier, IOracleConsumer
 {
+	address    constant IEXEC_HUB_MAINNET = 0x0000000000000000000000000000000000000000;
+	address    constant IEXEC_HUB_KOVAN   = 0xC75f4909185f712F2795563B956CCF62b76A6e13;
+	address    constant IEXEC_HUB_ROPSTEN = 0x0000000000000000000000000000000000000000;
+	address    constant IEXEC_HUB_RINKEBY = 0x0000000000000000000000000000000000000000;
+	address    constant IEXEC_HUB_GOERLI  = 0x0000000000000000000000000000000000000000;
+
 	IexecHub   public m_iexecHub;
 	IexecClerk public m_iexecClerk;
 	address    public m_authorizedApp;
@@ -17,11 +23,23 @@ contract IexecDoracle is SignatureVerifier, IOracleConsumer
 
 	event ResultReady(bytes32 indexed doracleCallId);
 
-	constructor(IexecHub _iexecHub)
+	constructor(address _iexecHubAddr)
 	public
 	{
-		m_iexecHub   = _iexecHub;
+		if      (getCodeSize(_iexecHubAddr)     > 0) { m_iexecHub = IexecHub(_iexecHubAddr);     }
+		else if (getCodeSize(IEXEC_HUB_MAINNET) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_MAINNET); }
+		else if (getCodeSize(IEXEC_HUB_KOVAN)   > 0) { m_iexecHub = IexecHub(IEXEC_HUB_KOVAN);   }
+		else if (getCodeSize(IEXEC_HUB_ROPSTEN) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_ROPSTEN); }
+		else if (getCodeSize(IEXEC_HUB_RINKEBY) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_RINKEBY); }
+		else if (getCodeSize(IEXEC_HUB_GOERLI)  > 0) { m_iexecHub = IexecHub(IEXEC_HUB_GOERLI);  }
+		else                                         { revert("invalid-hub-address");            }
 		m_iexecClerk = m_iexecHub.iexecclerk();
+	}
+
+	function getCodeSize(address _addr)
+	internal view returns (uint _size)
+	{
+		assembly { _size := extcodesize(_addr) }
 	}
 
 	function receiveResult(bytes32 _doracleCallId, bytes calldata)

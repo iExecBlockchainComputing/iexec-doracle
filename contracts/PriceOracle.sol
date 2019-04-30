@@ -16,11 +16,9 @@ contract PriceOracle is Ownable, IexecDoracle
 
 	event ValueChange(bytes32 indexed id, uint256 oldDate, uint256 oldValue, uint256 newDate, uint256 newValue);
 
-	// ================[ IexecHub 3.0.30 ]================
-	// Mainnet: TDB
-	// Kovan:   0xC75f4909185f712F2795563B956CCF62b76A6e13
-	// ===================================================
-	constructor(IexecHub _iexecHub) public IexecDoracle(_iexecHub)
+	// Use _iexecHubAddr to force use of custom iexechub, leave 0x0 for autodetect
+	constructor(address _iexecHubAddr)
+	public IexecDoracle(_iexecHubAddr)
 	{
 	}
 
@@ -37,7 +35,8 @@ contract PriceOracle is Ownable, IexecDoracle
 	}
 
 
-	function decodeResults(bytes memory results) public pure returns(uint256, string memory, uint256)
+	function decodeResults(bytes memory results)
+	public pure returns(uint256, string memory, uint256)
 	{ return abi.decode(results, (uint256, string, uint256)); }
 
 	function processResult(bytes32 _oracleCallId)
