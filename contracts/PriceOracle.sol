@@ -8,14 +8,22 @@ contract PriceOracle is Ownable, IexecDoracle
 {
 	struct timedValue
 	{
+		bytes32 oracleCallID;
 		uint256 date;
-		string  details;
 		uint256 value;
+		string  details;
 	}
 
 	mapping(bytes32 => timedValue) public values;
 
-	event ValueChange(bytes32 indexed id, uint256 oldDate, uint256 oldValue, uint256 newDate, uint256 newValue);
+	event ValueChange(
+		bytes32 indexed id,
+		bytes32 indexed oracleCallID,
+		uint256 oldDate,
+		uint256 oldValue,
+		uint256 newDate,
+		uint256 newValue
+	);
 
 	// Use _iexecHubAddr to force use of custom iexechub, leave 0x0 for autodetect
 	constructor(address _iexecHubAddr)
@@ -39,7 +47,7 @@ contract PriceOracle is Ownable, IexecDoracle
 	public pure returns(uint256, string memory, uint256)
 	{ return abi.decode(results, (uint256, string, uint256)); }
 
-	function processResult(bytes32 _oracleCallId)
+	function processResult(bytes32 _oracleCallID)
 	public
 	{
 		uint256       date;
@@ -47,16 +55,17 @@ contract PriceOracle is Ownable, IexecDoracle
 		uint256       value;
 
 		// Parse results
-		(date, details, value) = decodeResults(_iexecDoracleGetVerifiedResult(_oracleCallId));
+		(date, details, value) = decodeResults(_iexecDoracleGetVerifiedResult(_oracleCallID));
 
 		// Process results
 		bytes32 id = keccak256(bytes(details));
 		if (values[id].date < date)
 		{
-			emit ValueChange(id, values[id].date, values[id].value, date, value);
-			values[id].date    = date;
-			values[id].details = details;
-			values[id].value   = value;
+			emit ValueChange(id, _oracleCallID, values[id].date, values[id].value, date, value);
+			values[id].oracleCallID = _oracleCallID;
+			values[id].date         = date;
+			values[id].value        = value;
+			values[id].details      = details;
 		}
 	}
 }
