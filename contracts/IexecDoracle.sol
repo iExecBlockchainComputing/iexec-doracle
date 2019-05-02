@@ -6,11 +6,11 @@ import "iexec-poco/contracts/IexecHub.sol";
 
 contract IexecDoracle is SignatureVerifier, IOracleConsumer
 {
-	address    constant IEXEC_HUB_MAINNET = 0x0479803130866f2122eBb4bb4dEaCD53c5460804;
-	address    constant IEXEC_HUB_ROPSTEN = 0xC1d5385b885614Ff1C6e3fd1dcb340A02c4847b2;
-	address    constant IEXEC_HUB_RINKEBY = 0x0000000000000000000000000000000000000000;
-	address    constant IEXEC_HUB_KOVAN   = 0xC75f4909185f712F2795563B956CCF62b76A6e13;
-	address    constant IEXEC_HUB_GOERLI  = 0x0000000000000000000000000000000000000000;
+	address constant IEXEC_HUB_MAINNET = 0x0479803130866f2122eBb4bb4dEaCD53c5460804;
+	address constant IEXEC_HUB_ROPSTEN = 0xC1d5385b885614Ff1C6e3fd1dcb340A02c4847b2;
+	address constant IEXEC_HUB_RINKEBY = 0x0000000000000000000000000000000000000000;
+	address constant IEXEC_HUB_KOVAN   = 0xC75f4909185f712F2795563B956CCF62b76A6e13;
+	address constant IEXEC_HUB_GOERLI  = 0x0000000000000000000000000000000000000000;
 
 	IexecHub   public m_iexecHub;
 	IexecClerk public m_iexecClerk;
@@ -25,12 +25,12 @@ contract IexecDoracle is SignatureVerifier, IOracleConsumer
 	constructor(address _iexecHubAddr)
 	public
 	{
-		if      (getCodeSize(_iexecHubAddr)     > 0) { m_iexecHub = IexecHub(_iexecHubAddr);     }
+		if      (getCodeSize(_iexecHubAddr    ) > 0) { m_iexecHub = IexecHub(_iexecHubAddr    ); }
 		else if (getCodeSize(IEXEC_HUB_MAINNET) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_MAINNET); }
-		else if (getCodeSize(IEXEC_HUB_KOVAN)   > 0) { m_iexecHub = IexecHub(IEXEC_HUB_KOVAN);   }
 		else if (getCodeSize(IEXEC_HUB_ROPSTEN) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_ROPSTEN); }
 		else if (getCodeSize(IEXEC_HUB_RINKEBY) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_RINKEBY); }
-		else if (getCodeSize(IEXEC_HUB_GOERLI)  > 0) { m_iexecHub = IexecHub(IEXEC_HUB_GOERLI);  }
+		else if (getCodeSize(IEXEC_HUB_KOVAN  ) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_KOVAN  ); }
+		else if (getCodeSize(IEXEC_HUB_GOERLI ) > 0) { m_iexecHub = IexecHub(IEXEC_HUB_GOERLI ); }
 		else                                         { revert("invalid-hub-address");            }
 		m_iexecClerk = m_iexecHub.iexecclerk();
 	}
