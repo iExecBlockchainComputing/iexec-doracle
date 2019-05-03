@@ -59,13 +59,11 @@ contract PriceOracle is Ownable, IexecDoracle
 
 		// Process results
 		bytes32 id = keccak256(bytes(details));
-		if (values[id].date < date)
-		{
-			emit ValueChange(id, _oracleCallID, values[id].date, values[id].value, date, value);
-			values[id].oracleCallID = _oracleCallID;
-			values[id].date         = date;
-			values[id].value        = value;
-			values[id].details      = details;
-		}
+		require(values[id].date < date);
+		emit ValueChange(id, _oracleCallID, values[id].date, values[id].value, date, value);
+		values[id].oracleCallID = _oracleCallID;
+		values[id].date         = date;
+		values[id].value        = value;
+		values[id].details      = details;
 	}
 }
