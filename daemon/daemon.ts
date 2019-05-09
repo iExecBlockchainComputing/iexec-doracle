@@ -40,7 +40,8 @@ class Daemon
 (async () => {
 
 	let address  = process.env["PRICE_DORACLE_ADDRESS"];
-	let provider = new ethers.providers.JsonRpcProvider(process.env["PRICE_DORACLE_PROVIDER"]);
+	let provider = ethers.getDefaultProvider(process.env["PRICE_DORACLE_PROVIDER"]);
+	//let provider = new ethers.providers.JsonRpcProvider(process.env["PRICE_DORACLE_PROVIDER"]);
 	let wallet   = new ethers.Wallet(process.env["PRICE_DORACLE_WALLET"], provider);
 	let daemon   = new Daemon(address, wallet);
 
