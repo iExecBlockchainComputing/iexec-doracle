@@ -92,6 +92,8 @@ contract('PriceOracle', async (accounts) => {
 		WorkerpoolRegistryInstance = await WorkerpoolRegistry.deployed();
 		PriceOracleInstance = await PriceOracle.new(IexecHubInstance.address);
 
+		console.log("PriceOracleInstance:", PriceOracleInstance.address);
+
 		odbtools.setup({
 			name:              "iExecODB",
 			version:           "3.0-alpha",
