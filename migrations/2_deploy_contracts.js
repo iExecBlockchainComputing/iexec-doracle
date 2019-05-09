@@ -71,7 +71,6 @@ module.exports = async function(deployer, network, accounts)
 	console.log("AppRegistry        deployed at address: " + AppRegistryInstance.address);
 	console.log("DatasetRegistry    deployed at address: " + DatasetRegistryInstance.address);
 	console.log("WorkerpoolRegistry deployed at address: " + WorkerpoolRegistryInstance.address);
-	// transferOwnership if ownable
 
 	await IexecHubInstance.attachContracts(
 		IexecClerkInstance.address

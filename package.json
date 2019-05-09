@@ -19,7 +19,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "ethereumjs-util": "^5.2.0",
-    "iexec-poco": "^3.0.33",
+    "iexec-poco": "^3.0.35",
     "iexec-solidity": "^0.0.6",
     "multiaddr": "^6.0.6",
     "openzeppelin-solidity": "^2.2.0",
