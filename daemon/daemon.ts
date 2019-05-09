@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import   config   from './config.js';
 
 // import PriceOracle from 'iexec-doracle-contracts/build/contracts/PriceOracle.json';
 const PriceOracle = require('../build/contracts/PriceOracle.json');
@@ -39,11 +40,9 @@ class Daemon
 
 (async () => {
 
-	let address  = process.env["PRICE_DORACLE_ADDRESS"];
-	let provider = ethers.getDefaultProvider(process.env["PRICE_DORACLE_PROVIDER"]);
-	//let provider = new ethers.providers.JsonRpcProvider(process.env["PRICE_DORACLE_PROVIDER"]);
-	let wallet   = new ethers.Wallet(process.env["PRICE_DORACLE_WALLET"], provider);
-	let daemon   = new Daemon(address, wallet);
+	let provider = ethers.getDefaultProvider(config.provider);
+	let wallet   = new ethers.Wallet(config.wallet, provider);
+	let daemon   = new Daemon(config.address, wallet);
 
 	daemon.start();
 
