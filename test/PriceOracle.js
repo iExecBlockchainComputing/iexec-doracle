@@ -90,7 +90,7 @@ contract('PriceOracle', async (accounts) => {
 		AppRegistryInstance        = await AppRegistry.deployed();
 		DatasetRegistryInstance    = await DatasetRegistry.deployed();
 		WorkerpoolRegistryInstance = await WorkerpoolRegistry.deployed();
-		PriceOracleInstance = await PriceOracle.new(IexecHubInstance.address);
+		PriceOracleInstance        = await PriceOracle.deployed();
 
 		console.log("PriceOracleInstance:", PriceOracleInstance.address);
 

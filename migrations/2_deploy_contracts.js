@@ -5,6 +5,7 @@ var IexecClerk         = artifacts.require("iexec-poco/IexecClerk");
 var AppRegistry        = artifacts.require("iexec-poco/AppRegistry");
 var DatasetRegistry    = artifacts.require("iexec-poco/DatasetRegistry");
 var WorkerpoolRegistry = artifacts.require("iexec-poco/WorkerpoolRegistry");
+var PriceOracle        = artifacts.require("PriceOracle");
 
 module.exports = async function(deployer, network, accounts)
 {
@@ -84,5 +85,9 @@ module.exports = async function(deployer, network, accounts)
 
 	await IexecHubInstance.transferOwnership(owner);
 	console.log("setCategoriesCreator to " + owner);
+
+	await deployer.deploy(PriceOracle, IexecHubInstance.address);
+	PriceOracleInstance = await PriceOracle.deployed();
+	console.log("PriceOracle deployed at address: " + PriceOracleInstance.address);
 
 };
