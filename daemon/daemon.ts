@@ -32,12 +32,13 @@ export default class Daemon
 	async start(listener: boolean = true) : Promise<void>
 	{
 		console.log(`Connecting to contracts`);
-		this.doracle    = new ethers.Contract(this.address,                      PriceOracle.abi, this.wallet);
+		this.doracle = new ethers.Contract(this.address, PriceOracle.abi, this.wallet);
 		console.log(`- doracle    ${this.doracle.address}`);
-		this.iexechub   = new ethers.Contract(await this.doracle.m_iexecHub(),   IexecHub.abi,    this.wallet.provider);
+		this.iexechub = new ethers.Contract(await this.doracle.m_iexecHub(), IexecHub.abi, this.wallet.provider);
 		console.log(`- iexechub   ${this.iexechub.address}`);
-		this.iexecclerk = new ethers.Contract(await this.doracle.m_iexecClerk(), IexecClerk.abi,  this.wallet.provider);
+		this.iexecclerk = new ethers.Contract(await this.doracle.m_iexecClerk(), IexecClerk.abi, this.wallet.provider);
 		console.log(`- iexecclerk ${this.iexecclerk.address}`);
+
 		console.log(`Retrieving doracle settings:`);
 		this.settings = {
 			authorizedApp:        await this.doracle.m_authorizedApp(),
