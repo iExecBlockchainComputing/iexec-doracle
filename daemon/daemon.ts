@@ -1,10 +1,8 @@
 import { ethers } from 'ethers';
-import   config   from './config.js';
 
-// import PriceOracle from 'iexec-doracle-contracts/build/contracts/PriceOracle.json';
 const PriceOracle = require('../build/contracts/PriceOracle.json');
 
-class Daemon
+export default class Daemon
 {
 	wallet:   ethers.Wallet;
 	contract: ethers.Contract;
@@ -37,13 +35,3 @@ class Daemon
 		});
 	}
 }
-
-(async () => {
-
-	let provider = ethers.getDefaultProvider(config.provider);
-	let wallet   = new ethers.Wallet(config.wallet, provider);
-	let daemon   = new Daemon(config.address, wallet);
-
-	daemon.start();
-
-})();
