@@ -1,5 +1,5 @@
 {
-  "name": "iexec-doracle-contracts",
+  "name": "iexec-doracle-base",
   "version": "0.0.1",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
