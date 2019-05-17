@@ -14,7 +14,7 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 	event ResultReady(bytes32 indexed doracleCallId);
 
 	constructor(address _iexecHubAddr)
-	public IexecDoracle(_iexecHubAddr)
+	public IexecInterface(_iexecHubAddr)
 	{}
 
 	function receiveResult(bytes32 _doracleCallId, bytes calldata)
