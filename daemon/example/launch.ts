@@ -11,6 +11,4 @@ let provider: ethers.providers.Provider = ethers.getDefaultProvider(process.env.
 let wallet: ethers.Wallet       = new ethers.Wallet(private_key, provider);
 let daemon: IexecDoracleUpdater_PriceFeed = new IexecDoracleUpdater_PriceFeed(doracle_addr, wallet, process.env.REQUESTER);
 
-daemon.checkData("test 1");
-daemon.testCheckData("test 2");
-// daemon.start();
+daemon.start();

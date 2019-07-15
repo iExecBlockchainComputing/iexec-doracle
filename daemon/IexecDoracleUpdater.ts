@@ -115,13 +115,6 @@ export default class IexecDoracleUpdater
 		// Default, not do anything
 	}
 
-	async testCheckData(data: string) : Promise<void>
-	{
-		console.log('- testing begin -');
-		await this.checkData(data);
-		console.log('- testing end -');
-	}
-
 	trigger(doracleCallId: string, event: {})
 	{
 		process.stdout.write(`${new Date().toISOString()} | processing ${doracleCallId} ... `);
