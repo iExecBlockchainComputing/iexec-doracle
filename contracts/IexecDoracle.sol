@@ -45,13 +45,13 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 		IexecODBLibCore.Task memory task = iexecHub.viewTask(_doracleCallId);
 		IexecODBLibCore.Deal memory deal = iexecClerk.viewDeal(task.dealid);
 
-		require(task.status == IexecODBLibCore.TaskStatusEnum.COMPLETED,                                                                                    "result-not-available"             );
-		require(task.resultDigest == keccak256(task.results),                                                                                               "result-not-validated-by-consensus");
+		require(task.status == IexecODBLibCore.TaskStatusEnum.COMPLETED,                                                                                  "result-not-available"             );
+		require(task.resultDigest == keccak256(task.results),                                                                                             "result-not-validated-by-consensus");
 		require(m_authorizedApp        == address(0) || checkIdentity(m_authorizedApp,        deal.app.pointer,        iexecClerk.GROUPMEMBER_PURPOSE()), "unauthorized-app"                 );
 		require(m_authorizedDataset    == address(0) || checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    iexecClerk.GROUPMEMBER_PURPOSE()), "unauthorized-dataset"             );
 		require(m_authorizedWorkerpool == address(0) || checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, iexecClerk.GROUPMEMBER_PURPOSE()), "unauthorized-workerpool"          );
-		require(m_requiredtag & ~deal.tag == bytes32(0),                                                                                                    "invalid-tag"                      );
-		require(m_requiredtrust <= deal.trust,                                                                                                              "invalid-trust"                    );
+		require(m_requiredtag & ~deal.tag == bytes32(0),                                                                                                  "invalid-tag"                      );
+		require(m_requiredtrust <= deal.trust,                                                                                                            "invalid-trust"                    );
 		return task.results;
 	}
 }
