@@ -76,7 +76,7 @@ contract Lottery is ERC20, IexecDoracle
 	{
 		Details storage details = lotteryDetails[_id];
 
-		require(now < details.registrationDeadline);
+		require(now <= details.registrationDeadline);
 		require(details.participants.length < details.maxParticipants);
 
 		_transfer(msg.sender, address(this), details.ticketPrice);
@@ -95,6 +95,7 @@ contract Lottery is ERC20, IexecDoracle
 	{
 		Details storage details = lotteryDetails[_id];
 
+		require(now > details.registrationDeadline);
 		require(details.oracleCall == bytes32(0));
 
 		// check whitelist
