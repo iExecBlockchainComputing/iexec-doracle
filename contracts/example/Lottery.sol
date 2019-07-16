@@ -36,9 +36,21 @@ contract Lottery is ERC20, IexecDoracle
 	event Reward        (uint256 indexed id, address winner, uint256 value);
 	event Claim         (uint256 indexed id);
 
-	constructor()
-	public IexecDoracle(address(0))
-	{}
+	constructor(
+		address _iexecHubAddr,
+		address _app,
+		address _dataset,
+		address _workerpool)
+	public IexecDoracle(_iexecHubAddr)
+	{
+		_iexecDoracleUpdateSettings(
+			_app,
+			_dataset,
+			_workerpool,
+			TAG,
+			TRUST
+		);
+	}
 
 	/***************************************************************************
 	 *                                 LOTTERY                                 *
