@@ -1,8 +1,9 @@
 pragma solidity ^0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "iexec-poco/contracts/IexecHub.sol";
-import "iexec-poco/contracts/IexecClerk.sol";
+import "./iexec-poco-interfaces/IexecHubInterface.sol";
+import "./iexec-poco-interfaces/IexecClerkInterface.sol";
+
 
 contract IexecInterface
 {
@@ -12,20 +13,20 @@ contract IexecInterface
 	address constant IEXEC_HUB_KOVAN   = 0xb3901d04CF645747b99DBbe8f2eE9cb41A89CeBF;
 	address constant IEXEC_HUB_GOERLI  = 0x0000000000000000000000000000000000000000;
 
-	IexecHub   public iexecHub;
-	IexecClerk public iexecClerk;
+	IexecHubInterface   public iexecHub;
+	IexecClerkInterface public iexecClerk;
 
 	constructor(address _iexecHubAddr)
 	public
 	{
-		if      (getCodeSize(_iexecHubAddr    ) > 0) { iexecHub = IexecHub(_iexecHubAddr    ); }
-		else if (getCodeSize(IEXEC_HUB_MAINNET) > 0) { iexecHub = IexecHub(IEXEC_HUB_MAINNET); }
-		else if (getCodeSize(IEXEC_HUB_ROPSTEN) > 0) { iexecHub = IexecHub(IEXEC_HUB_ROPSTEN); }
-		else if (getCodeSize(IEXEC_HUB_RINKEBY) > 0) { iexecHub = IexecHub(IEXEC_HUB_RINKEBY); }
-		else if (getCodeSize(IEXEC_HUB_KOVAN  ) > 0) { iexecHub = IexecHub(IEXEC_HUB_KOVAN  ); }
-		else if (getCodeSize(IEXEC_HUB_GOERLI ) > 0) { iexecHub = IexecHub(IEXEC_HUB_GOERLI ); }
+		if      (getCodeSize(_iexecHubAddr    ) > 0) { iexecHub = IexecHubInterface(_iexecHubAddr    ); }
+		else if (getCodeSize(IEXEC_HUB_MAINNET) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_MAINNET); }
+		else if (getCodeSize(IEXEC_HUB_ROPSTEN) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_ROPSTEN); }
+		else if (getCodeSize(IEXEC_HUB_RINKEBY) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_RINKEBY); }
+		else if (getCodeSize(IEXEC_HUB_KOVAN  ) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_KOVAN  ); }
+		else if (getCodeSize(IEXEC_HUB_GOERLI ) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_GOERLI ); }
 		else                                         { revert("invalid-hub-address");          }
-		iexecClerk = iexecHub.iexecclerk();
+		iexecClerk = IexecClerkInterface(iexecHub.iexecclerk());
 	}
 
 	function getCodeSize(address _addr)
