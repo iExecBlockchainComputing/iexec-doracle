@@ -25,7 +25,7 @@ contract IexecInterface
 		else if (getCodeSize(IEXEC_HUB_RINKEBY) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_RINKEBY); }
 		else if (getCodeSize(IEXEC_HUB_KOVAN  ) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_KOVAN  ); }
 		else if (getCodeSize(IEXEC_HUB_GOERLI ) > 0) { iexecHub = IexecHubInterface(IEXEC_HUB_GOERLI ); }
-		else                                         { revert("invalid-hub-address");          }
+		else                                         { revert("invalid-hub-address");                   }
 		iexecClerk = IexecClerkInterface(iexecHub.iexecclerk());
 	}
 
