@@ -13,16 +13,16 @@
     "/build",
     "/contracts"
   ],
-	"scripts": {
-		"build": "yarn build:contracts && yarn build:ts",
-		"build:contracts": "truffle compile",
-		"build:ts": "tsc"
-	},
+  "scripts": {
+    "build": "yarn build:contracts && yarn build:ts",
+    "build:contracts": "truffle compile",
+    "build:ts": "tsc"
+  },
   "author": "iExec",
   "license": "ISC",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
-    "iexec-poco": "^3.0.35",
+    "iexec-poco-interface": "^3.0.35-2",
     "iexec-solidity": "^0.0.13",
     "openzeppelin-solidity": "^2.3.0"
   },
