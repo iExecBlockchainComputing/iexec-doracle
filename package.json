@@ -1,6 +1,6 @@
 {
   "name": "iexec-doracle-base",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "license": "ISC",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
-    "iexec-poco-interface": "^3.0.35-2",
+    "iexec-poco-interface": "^3.0.35-3",
     "iexec-solidity": "^0.0.13",
     "openzeppelin-solidity": "^2.3.0"
   },
