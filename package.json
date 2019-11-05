@@ -1,6 +1,6 @@
 {
   "name": "iexec-doracle-base",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
