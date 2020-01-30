@@ -1,7 +1,7 @@
 pragma solidity ^0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "../IexecDoracle.sol";
 
 contract PriceOracle is Ownable, IexecDoracle

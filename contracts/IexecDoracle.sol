@@ -1,10 +1,9 @@
 pragma solidity ^0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "iexec-solidity/contracts/ERC1154/IERC1154.sol";
-import "iexec-solidity/contracts/Libs/SignatureVerifier.sol";
-import "iexec-poco-interface/contracts/IexecInterface.sol";
-
+import "@iexec/interface/contracts/IexecInterface.sol";
+import "@iexec/solidity/contracts/ERC1154/IERC1154.sol";
+import "@iexec/solidity/contracts/Libs/SignatureVerifier.sol";
 
 contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 {
