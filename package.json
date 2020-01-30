@@ -23,12 +23,12 @@
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
     "iexec-poco-interface": "^3.0.35-3",
-    "iexec-solidity": "^0.0.13",
-    "openzeppelin-solidity": "^2.3.0"
+    "iexec-solidity": "0.0.24",
+    "openzeppelin-solidity": "^2.4.0"
   },
   "devDependencies": {
-    "ethers": "^4.0.33",
-    "truffle": "^5.0.27",
-    "typescript": "^3.5.3"
+    "ethers": "^4.0.44",
+    "truffle": "^5.1.10",
+    "typescript": "^3.7.5"
   }
 }

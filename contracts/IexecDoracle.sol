@@ -1,9 +1,9 @@
 pragma solidity ^0.5.8;
 pragma experimental ABIEncoderV2;
 
-import "iexec-solidity/contracts/ERC1154_OracleInterface/IERC1154.sol";
+import "iexec-solidity/contracts/ERC1154/IERC1154.sol";
+import "iexec-solidity/contracts/Libs/SignatureVerifier.sol";
 import "iexec-poco-interface/contracts/IexecInterface.sol";
-import "./SignatureVerifier.sol";
 
 
 contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
@@ -48,13 +48,13 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 		IexecODBLibCore.Task memory task = iexecHub.viewTask(_doracleCallId);
 		IexecODBLibCore.Deal memory deal = iexecClerk.viewDeal(task.dealid);
 
-		if (task.status != IexecODBLibCore.TaskStatusEnum.COMPLETED                                                                                  ) { return (false, bytes("result-not-available"             ));  }
-		if (task.resultDigest != keccak256(task.results)                                                                                             ) { return (false, bytes("result-not-validated-by-consensus"));  }
-		if (m_authorizedApp        != address(0) && !checkIdentity(m_authorizedApp,        deal.app.pointer,        iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-app"                 ));  }
-		if (m_authorizedDataset    != address(0) && !checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-dataset"             ));  }
-		if (m_authorizedWorkerpool != address(0) && !checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-workerpool"          ));  }
-		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                                                  ) { return (false, bytes("invalid-tag"                      ));  }
-		if (m_requiredtrust > deal.trust                                                                                                             ) { return (false, bytes("invalid-trust"                    ));  }
+		if (task.status != IexecODBLibCore.TaskStatusEnum.COMPLETED                                                                                   ) { return (false, bytes("result-not-available"             ));  }
+		if (task.resultDigest != keccak256(task.results)                                                                                              ) { return (false, bytes("result-not-validated-by-consensus"));  }
+		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-app"                 ));  }
+		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-dataset"             ));  }
+		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-workerpool"          ));  }
+		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                                                   ) { return (false, bytes("invalid-tag"                      ));  }
+		if (m_requiredtrust > deal.trust                                                                                                              ) { return (false, bytes("invalid-trust"                    ));  }
 		return (true, task.results);
 	}
 
