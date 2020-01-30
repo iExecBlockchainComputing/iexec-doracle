@@ -22,7 +22,7 @@
   "license": "ISC",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
-    "iexec-poco-interface": "^3.0.35-3",
+    "iexec-poco-interface": "^3.0.35-8",
     "iexec-solidity": "0.0.24",
     "openzeppelin-solidity": "^2.4.0"
   },
