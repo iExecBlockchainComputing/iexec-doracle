@@ -1,11 +1,11 @@
-pragma solidity ^0.5.8;
+pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
-import "@iexec/interface/contracts/IexecInterface.sol";
-import "@iexec/solidity/contracts/ERC1154/IERC1154.sol";
-import "@iexec/solidity/contracts/Libs/SignatureVerifier.sol";
+import "@iexec/interface/contracts/WithIexecToken.sol";
+import "@iexec/solidity/contracts/ERC734/IERC734.sol";
 
-contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
+
+contract IexecDoracle is WithIexecToken
 {
 	address public m_authorizedApp;
 	address public m_authorizedDataset;
@@ -13,25 +13,16 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 	bytes32 public m_requiredtag;
 	uint256 public m_requiredtrust;
 
-	event ResultReady(bytes32 indexed doracleCallId);
-
-	constructor(address _iexecHubAddr)
-	public IexecInterface(_iexecHubAddr)
+	constructor(address _iexecproxy)
+	public WithIexecToken(_iexecproxy)
 	{}
 
-	function receiveResult(bytes32 _doracleCallId, bytes calldata)
-	external
-	{
-		emit ResultReady(_doracleCallId);
-	}
-
 	function _iexecDoracleUpdateSettings(
-		address _authorizedApp
-	,	address _authorizedDataset
-	,	address _authorizedWorkerpool
-	, bytes32 _requiredtag
-	, uint256 _requiredtrust
-	)
+		address _authorizedApp,
+		address _authorizedDataset,
+		address _authorizedWorkerpool,
+		bytes32 _requiredtag,
+		uint256 _requiredtrust)
 	internal
 	{
 		m_authorizedApp        = _authorizedApp;
@@ -44,16 +35,17 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 	function _iexecDoracleGetResults(bytes32 _doracleCallId)
 	internal view returns (bool, bytes memory)
 	{
-		IexecODBLibCore.Task memory task = iexecHub.viewTask(_doracleCallId);
-		IexecODBLibCore.Deal memory deal = iexecClerk.viewDeal(task.dealid);
+		IexecLibCore_v5.Task memory task    = iexecproxy.viewTask(_doracleCallId);
+		IexecLibCore_v5.Deal memory deal    = iexecproxy.viewDeal(task.dealid);
+		uint256                     purpose = iexecproxy.groupmember_purpose();
 
-		if (task.status != IexecODBLibCore.TaskStatusEnum.COMPLETED                                                                                   ) { return (false, bytes("result-not-available"             ));  }
-		if (task.resultDigest != keccak256(task.results)                                                                                              ) { return (false, bytes("result-not-validated-by-consensus"));  }
-		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-app"                 ));  }
-		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-dataset"             ));  }
-		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, iexecClerk.GROUPMEMBER_PURPOSE())) { return (false, bytes("unauthorized-workerpool"          ));  }
-		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                                                   ) { return (false, bytes("invalid-tag"                      ));  }
-		if (m_requiredtrust > deal.trust                                                                                                              ) { return (false, bytes("invalid-trust"                    ));  }
+		if (task.status   != IexecLibCore_v5.TaskStatusEnum.COMPLETED                                                        ) { return (false, bytes("result-not-available"             ));  }
+		if (deal.callback != address(this)                                                                                   ) { return (false, bytes("result-not-validated-for-callback"));  }
+		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        purpose)) { return (false, bytes("unauthorized-app"                 ));  }
+		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    purpose)) { return (false, bytes("unauthorized-dataset"             ));  }
+		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, purpose)) { return (false, bytes("unauthorized-workerpool"          ));  }
+		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                          ) { return (false, bytes("invalid-tag"                      ));  }
+		if (m_requiredtrust > deal.trust                                                                                     ) { return (false, bytes("invalid-trust"                    ));  }
 		return (true, task.results);
 	}
 
@@ -63,5 +55,11 @@ contract IexecDoracle is IexecInterface, SignatureVerifier, IOracleConsumer
 		(bool success, bytes memory results) = _iexecDoracleGetResults(_doracleCallId);
 		require(success, string(results));
 		return results;
+	}
+
+	function _checkIdentity(address _identity, address _candidate, uint256 _purpose)
+	internal view returns (bool valid)
+	{
+		return _identity == _candidate || IERC734(_identity).keyHasPurpose(bytes32(uint256(_candidate)), _purpose); // Simple address || ERC 734 identity contract
 	}
 }

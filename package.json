@@ -22,13 +22,13 @@
   "license": "ISC",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
-    "@iexec/interface": "3.0.35-8",
-    "@iexec/solidity": "0.0.24",
-    "@openzeppelin/contracts": "2.4.0"
+    "@iexec/interface": "5.0.0-1",
+    "@iexec/solidity": "0.1.0-beta.15",
+    "@openzeppelin/contracts": "3.0.1"
   },
   "devDependencies": {
-    "ethers": "4.0.44",
-    "truffle": "5.1.10",
-    "typescript": "3.7.5"
+    "ethers": "4.0.47",
+    "truffle": "5.1.24",
+    "typescript": "3.8.3"
   }
 }
