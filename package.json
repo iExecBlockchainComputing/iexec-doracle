@@ -1,6 +1,6 @@
 {
   "name": "@iexec/doracle",
-  "version": "0.0.11",
+  "version": "5.1.2",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
@@ -22,13 +22,14 @@
   "license": "ISC",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
-    "@iexec/interface": "5.0.0-1",
-    "@iexec/solidity": "0.1.0-beta.15",
-    "@openzeppelin/contracts": "3.0.1"
+    "@iexec/interface": "5.1.2",
+    "@iexec/solidity": "0.1.0",
+    "@openzeppelin/contracts": "3.0.2"
   },
   "devDependencies": {
-    "ethers": "4.0.47",
-    "truffle": "5.1.24",
-    "typescript": "3.8.3"
+    "@types/node": "14.0.13",
+    "ethers": "5.0.2",
+    "truffle": "5.1.30",
+    "typescript": "3.9.5"
   }
 }

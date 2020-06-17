@@ -8,7 +8,7 @@ let doracle_addr: string                = process.env.DORACLE_ADDR;
 let private_key: string                 = process.env.MNEMONIC;
 let provider: ethers.providers.Provider = ethers.getDefaultProvider(process.env.PROVIDER);
 
-let wallet: ethers.Wallet       = new ethers.Wallet(private_key, provider);
+let wallet: ethers.Wallet                 = new ethers.Wallet(private_key, provider);
 let daemon: IexecDoracleUpdater_PriceFeed = new IexecDoracleUpdater_PriceFeed(doracle_addr, wallet, process.env.REQUESTER);
 
 daemon.start();

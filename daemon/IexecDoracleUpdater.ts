@@ -1,12 +1,9 @@
 import { ethers } from 'ethers';
 import * as utils from './utils';
 
-const IexecHub   = require('iexec-poco-interface/build/contracts/IexecHub.json');
-const IexecClerk = require('iexec-poco-interface/build/contracts/IexecClerk.json');
-const IERC734    = require('iexec-solidity/build/contracts/IERC734.json');
-
-// PriceFeed
-const DoracleABI = { abi:[{"constant":true,"inputs":[{"name":"_identity","type":"address"},{"name":"_hash","type":"bytes32"},{"name":"_signature","type":"bytes"}],"name":"verifySignature","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_authorizedApp","type":"address"},{"name":"_authorizedDataset","type":"address"},{"name":"_authorizedWorkerpool","type":"address"},{"name":"_requiredtag","type":"bytes32"},{"name":"_requiredtrust","type":"uint256"}],"name":"updateEnv","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"m_authorizedApp","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"results","type":"bytes"}],"name":"decodeResults","outputs":[{"name":"","type":"uint256"},{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"_doracleCallId","type":"bytes32"},{"name":"","type":"bytes"}],"name":"receiveResult","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"m_authorizedDataset","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"m_iexecClerk","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"m_iexecHub","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"m_authorizedWorkerpool","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"values","outputs":[{"name":"oracleCallID","type":"bytes32"},{"name":"date","type":"uint256"},{"name":"value","type":"uint256"},{"name":"details","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"m_requiredtrust","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oracleCallID","type":"bytes32"}],"name":"processResult","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"m_requiredtag","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_iexecHubAddr","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"id","type":"bytes32"},{"indexed":true,"name":"oracleCallID","type":"bytes32"},{"indexed":false,"name":"oldDate","type":"uint256"},{"indexed":false,"name":"oldValue","type":"uint256"},{"indexed":false,"name":"newDate","type":"uint256"},{"indexed":false,"name":"newValue","type":"uint256"}],"name":"ValueChange","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"doracleCallId","type":"bytes32"}],"name":"ResultReady","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"}]};
+const IexecInterface = require('@iexec/interface/build/contracts/IexecInterfaceToken.json');
+const IERC734        = require('@iexec/solidity/build/contracts/IERC734.json');
+const Doracle        = require('@iexec/doracle/build/contracts/IexecDoracle.json');
 
 export default class IexecDoracleUpdater
 {
@@ -15,8 +12,7 @@ export default class IexecDoracleUpdater
 	requester: string;
 
 	doracle:    ethers.Contract;
-	iexechub:   ethers.Contract;
-	iexecclerk: ethers.Contract;
+	iexecproxy: ethers.Contract;
 
 	settings:
 	{
@@ -38,12 +34,10 @@ export default class IexecDoracleUpdater
 	async start(listener: boolean = true) : Promise<void>
 	{
 		console.log(`Connecting to contracts`);
-		this.doracle = new ethers.Contract(this.address, DoracleABI.abi, this.wallet);
+		this.doracle = new ethers.Contract(this.address, Doracle.abi, this.wallet);
 		console.log(`- doracle    ${this.doracle.address}`);
-		this.iexechub = new ethers.Contract(await this.doracle.m_iexecHub(), IexecHub.abi, this.wallet.provider);
-		console.log(`- iexechub   ${this.iexechub.address}`);
-		this.iexecclerk = new ethers.Contract(await this.doracle.m_iexecClerk(), IexecClerk.abi, this.wallet.provider);
-		console.log(`- iexecclerk ${this.iexecclerk.address}`);
+		this.iexecproxy = new ethers.Contract(await this.doracle.iexecproxy(), IexecInterface.abi, this.wallet.provider);
+		console.log(`- iexecproxy ${this.iexecproxy.address}`);
 
 		console.log(`Retrieving doracle settings:`);
 		this.settings = {
@@ -52,7 +46,7 @@ export default class IexecDoracleUpdater
 			authorizedWorkerpool: await this.doracle.m_authorizedWorkerpool(),
 			requiredtag:          await this.doracle.m_requiredtag(),
 			requiredtrust:        await this.doracle.m_requiredtrust(),
-			GROUPMEMBER_PURPOSE:  await this.iexecclerk.GROUPMEMBER_PURPOSE(),
+			GROUPMEMBER_PURPOSE:  await this.iexecproxy.GROUPMEMBER_PURPOSE(),
 		}
 		console.log(`- authorizedApp:        ${this.settings.authorizedApp}`       );
 		console.log(`- authorizedDataset:    ${this.settings.authorizedDataset}`   );
@@ -88,8 +82,8 @@ export default class IexecDoracleUpdater
 
 	async getVerifiedResult(doracleCallId: string) : Promise<string>
 	{
-		let task = await this.iexechub.viewTask(doracleCallId);
-		let deal = await this.iexecclerk.viewDeal(task.dealid);
+		let task = await this.iexecproxy.viewTask(doracleCallId);
+		let deal = await this.iexecproxy.viewDeal(task.dealid);
 
 		if (this.requester)
 		{
@@ -104,8 +98,9 @@ export default class IexecDoracleUpdater
 		utils.require(this.settings.requiredtrust <= deal.trust, "invalid-trust");
 
 		// Check tag - must be done byte by byte.
-		let [ ta, rta ] = [ deal.tag, this.settings.requiredtag ].map(ethers.utils.arrayify);
-		for (var i in ta) utils.require((rta[i] & ~ta[i]) == 0, "invalid-tag");
+		let  tag = ethers.utils.arrayify(deal.tag);
+		let rtag = ethers.utils.arrayify(this.settings.requiredtag);
+		for (var i in tag) utils.require((rtag[i] & ~tag[i]) == 0, "invalid-tag");
 
 		return task.results;
 	}
