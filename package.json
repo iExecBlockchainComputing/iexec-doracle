@@ -1,6 +1,6 @@
 {
   "name": "@iexec/doracle",
-  "version": "0.0.11",
+  "version": "3.0.0",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
