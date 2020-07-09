@@ -60,7 +60,7 @@ contract PriceOracle is IexecDoracle, Ownable, IOracleConsumer, IERC2362
 
 	// ERC2362 - ADO result viewer
 	function valueFor(bytes32 _id)
-	external override view returns(int256,uint256,uint256)
+	external override view returns (int256, uint256, uint256)
 	{
 		if (values[_id].oracleCallID == bytes32(0))
 		{

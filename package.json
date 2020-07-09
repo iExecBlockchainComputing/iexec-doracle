@@ -24,12 +24,15 @@
   "dependencies": {
     "@iexec/interface": "5.1.2",
     "@iexec/solidity": "0.1.0",
-    "@openzeppelin/contracts": "3.0.2"
+    "@openzeppelin/contracts": "3.1.0"
   },
   "devDependencies": {
-    "@types/node": "14.0.13",
-    "ethers": "5.0.2",
-    "truffle": "5.1.30",
-    "typescript": "3.9.5"
+    "@truffle/hdwallet-provider": "^1.0.37",
+    "@types/node": "14.0.20",
+    "ethers": "5.0.5",
+    "solidity-coverage": "^0.7.9",
+    "truffle": "5.1.33",
+    "truffle-plugin-verify": "^0.3.11",
+    "typescript": "3.9.6"
   }
 }
