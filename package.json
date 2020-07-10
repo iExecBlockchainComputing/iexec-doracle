@@ -1,6 +1,6 @@
 {
   "name": "@iexec/doracle",
-  "version": "5.1.2-alpha.0",
+  "version": "5.1.2",
   "description": "Contracts for the iExec DOracle solution",
   "repository": {
     "type": "git",
@@ -14,9 +14,7 @@
     "/contracts"
   ],
   "scripts": {
-    "build": "yarn build:contracts && yarn build:ts",
-    "build:contracts": "truffle compile",
-    "build:ts": "tsc"
+    "build": "truffle compile"
   },
   "author": "iExec",
   "license": "ISC",
@@ -27,12 +25,6 @@
     "@openzeppelin/contracts": "3.1.0"
   },
   "devDependencies": {
-    "@truffle/hdwallet-provider": "^1.0.37",
-    "@types/node": "14.0.20",
-    "ethers": "5.0.5",
-    "solidity-coverage": "^0.7.9",
-    "truffle": "5.1.33",
-    "truffle-plugin-verify": "^0.3.11",
-    "typescript": "3.9.6"
+    "truffle": "^5.1.34"
   }
 }
