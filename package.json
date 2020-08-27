@@ -17,7 +17,7 @@
     "build": "truffle compile"
   },
   "author": "iExec",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-doracle-contracts.git#readme",
   "dependencies": {
     "@iexec/interface": "5.1.2",
