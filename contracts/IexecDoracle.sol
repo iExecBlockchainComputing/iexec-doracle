@@ -79,7 +79,7 @@ contract IexecDoracle is WithIexecToken
 	{
 		if (_identity == _candidate)
 		{
-			return true
+			return true;
 		}
 		try IERC734(_identity).keyHasPurpose(bytes32(uint256(_candidate)), _purpose) returns (bool value)
 		{
@@ -87,7 +87,7 @@ contract IexecDoracle is WithIexecToken
 		}
 		catch (bytes memory /*lowLevelData*/)
 		{
-			return false
+			return false;
 		}
 	}
 }
