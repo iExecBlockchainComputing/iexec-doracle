@@ -51,25 +51,25 @@ contract IexecDoracle is WithIexecToken
 	}
 
 	function _iexecDoracleGetResults(bytes32 _doracleCallId)
-	internal view returns (bool, bytes memory)
+	internal view returns (bool, bytes memory, string memory)
 	{
 		IexecLibCore_v5.Task memory task = iexecproxy.viewTask(_doracleCallId);
 		IexecLibCore_v5.Deal memory deal = iexecproxy.viewDeal(task.dealid);
 
-		if (task.status   != IexecLibCore_v5.TaskStatusEnum.COMPLETED                                                  ) { return (false, bytes("result-not-available"             ));  }
-		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        4)) { return (false, bytes("unauthorized-app"                 ));  }
-		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    4)) { return (false, bytes("unauthorized-dataset"             ));  }
-		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, 4)) { return (false, bytes("unauthorized-workerpool"          ));  }
-		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                    ) { return (false, bytes("invalid-tag"                      ));  }
-		if (m_requiredtrust > deal.trust                                                                               ) { return (false, bytes("invalid-trust"                    ));  }
-		return (true, task.resultsCallback);
+		if (task.status   != IexecLibCore_v5.TaskStatusEnum.COMPLETED                                                  ) { return (false, task.resultsCallback, "result-not-available"   );  }
+		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        4)) { return (false, task.resultsCallback, "unauthorized-app"       );  }
+		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    4)) { return (false, task.resultsCallback, "unauthorized-dataset"   );  }
+		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, 4)) { return (false, task.resultsCallback, "unauthorized-workerpool");  }
+		if (m_requiredtag & ~deal.tag != bytes32(0)                                                                    ) { return (false, task.resultsCallback, "invalid-tag"            );  }
+		if (m_requiredtrust > deal.trust                                                                               ) { return (false, task.resultsCallback, "invalid-trust"          );  }
+		return (true, task.resultsCallback, "");
 	}
 
 	function _iexecDoracleGetVerifiedResult(bytes32 _doracleCallId)
 	internal view returns (bytes memory)
 	{
-		(bool success, bytes memory results) = _iexecDoracleGetResults(_doracleCallId);
-		require(success, string(results));
+		(bool success, bytes memory results, string memory message) = _iexecDoracleGetResults(_doracleCallId);
+		require(success, message);
 		return results;
 	}
 
