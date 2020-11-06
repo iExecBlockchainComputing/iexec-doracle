@@ -57,7 +57,6 @@ contract IexecDoracle is WithIexecToken
 		IexecLibCore_v5.Deal memory deal = iexecproxy.viewDeal(task.dealid);
 
 		if (task.status   != IexecLibCore_v5.TaskStatusEnum.COMPLETED                                                  ) { return (false, bytes("result-not-available"             ));  }
-		if (deal.callback != address(this)                                                                             ) { return (false, bytes("result-not-validated-for-callback"));  }
 		if (m_authorizedApp        != address(0) && !_checkIdentity(m_authorizedApp,        deal.app.pointer,        4)) { return (false, bytes("unauthorized-app"                 ));  }
 		if (m_authorizedDataset    != address(0) && !_checkIdentity(m_authorizedDataset,    deal.dataset.pointer,    4)) { return (false, bytes("unauthorized-dataset"             ));  }
 		if (m_authorizedWorkerpool != address(0) && !_checkIdentity(m_authorizedWorkerpool, deal.workerpool.pointer, 4)) { return (false, bytes("unauthorized-workerpool"          ));  }
@@ -80,6 +79,10 @@ contract IexecDoracle is WithIexecToken
 		if (_identity == _candidate)
 		{
 			return true;
+		}
+		if (!_isContract(_identity))
+		{
+			return false;
 		}
 		try IERC734(_identity).keyHasPurpose(bytes32(uint256(_candidate)), _purpose) returns (bool value)
 		{
