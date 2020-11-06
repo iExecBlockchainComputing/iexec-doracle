@@ -77,6 +77,17 @@ contract IexecDoracle is WithIexecToken
 	function _checkIdentity(address _identity, address _candidate, uint256 _purpose)
 	internal view returns (bool valid)
 	{
-		return _identity == _candidate || IERC734(_identity).keyHasPurpose(bytes32(uint256(_candidate)), _purpose); // Simple address || ERC 734 identity contract
+		if (_identity == _candidate)
+		{
+			return true
+		}
+		try IERC734(_identity).keyHasPurpose(bytes32(uint256(_candidate)), _purpose) returns (bool value)
+		{
+			return value;
+		}
+		catch (bytes memory /*lowLevelData*/)
+		{
+			return false
+		}
 	}
 }
